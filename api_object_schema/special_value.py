@@ -1,0 +1,2 @@
+class SpecialValue(object):
+    pass
