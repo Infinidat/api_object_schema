@@ -9,7 +9,7 @@ class Field(object):
     This class represents a single field exposed by a schema
     """
 
-    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False, default=NOTHING, is_identity=False, is_filterable=False, getter_func=None, optional=False):
+    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False, default=NOTHING, is_identity=False, is_filterable=False, getter_func=None, setter_func=None, optional=False):
         super(Field, self).__init__()
 
         #:the name of this field, as will be seen by the Python code interacting with the object(s)
@@ -38,6 +38,8 @@ class Field(object):
         self.is_filterable = is_filterable
         #:An optional getter to obtain the field value from existing objects
         self.getter_func = getter_func
+        #:An optional setter to set the field value of existing object
+        self.setter_func = setter_func
         #:If specified, will be used to generate defaults for this field if required and not specified by the user.
         #:Can be either a value or a callable generating a default
         self._default = default
@@ -46,6 +48,12 @@ class Field(object):
         if self.getter_func is not None:
             return self.getter_func(obj)
         return getattr(obj, self.name)
+
+    def set_object(self, obj, value):
+        if self.setter_func is not None:
+            return self.setter_func(obj, value)
+        return setattr(obj, self.name, value)
+
 
     def generate_default(self):
         if hasattr(self._default, "__call__"):
