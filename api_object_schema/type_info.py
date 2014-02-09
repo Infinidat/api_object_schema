@@ -1,8 +1,13 @@
+from .value_translator import IdentityTranslator
+
 class TypeInfo(object):
 
-    def __init__(self, type, min_length=None, max_length=None, charset=None, max=None, min=None):
+    def __init__(self, type, api_type=None, min_length=None, max_length=None, charset=None, max=None, min=None, translator=IdentityTranslator()):
         super(TypeInfo, self).__init__()
         self.type = type
+        if api_type is None:
+            api_type = type
+        self.api_type = api_type
 
         #: minimum length for parameter
         self.min_length = min_length
@@ -16,6 +21,9 @@ class TypeInfo(object):
         self.min = min
         #: maximum value
         self.max = max
+        #:translator to be used when passing values to/from the API
+        self.translator = translator
+
 
     def is_valid_value(self, value):
         """

@@ -1,7 +1,6 @@
 from api_object_schema import TypeInfo
 
 
-
 def test_invalid_types():
     assert_not_valid(TypeInfo(str), 2)
     assert_not_valid(TypeInfo(bool), 2)

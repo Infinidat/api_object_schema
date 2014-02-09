@@ -2,7 +2,6 @@ import operator
 
 from ._compat import iteritems
 from .type_info import TypeInfo
-from .value_translator import IdentityTranslator
 from sentinels import NOTHING
 
 class Field(object):
@@ -10,7 +9,7 @@ class Field(object):
     This class represents a single field exposed by a schema
     """
 
-    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, translator=IdentityTranslator(), is_unique=False, default=NOTHING, is_identity=False, is_filterable=False, getter_func=None, optional=False):
+    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False, default=NOTHING, is_identity=False, is_filterable=False, getter_func=None, optional=False):
         super(Field, self).__init__()
 
         #:the name of this field, as will be seen by the Python code interacting with the object(s)
@@ -31,11 +30,9 @@ class Field(object):
         self.creation_parameter = creation_parameter
         #:If this is a creation parameter, controls whether we can omit this parameter
         self.optional = optional
-        #:translator to be used when passing values to/from the system
-        self.translator = translator
-        #:If True, means that this field value must be unique across the system
+        #:If True, means that this field value must be unique across the API
         self.is_unique = is_unique
-        #:If True, this field is a part of an set of fields used to identify this object in the system
+        #:If True, this field is a part of an set of fields used to identify this object in the API
         self.is_identity = is_identity
         #:Can we filter objects according to this field
         self.is_filterable = is_filterable
