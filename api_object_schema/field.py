@@ -4,12 +4,26 @@ from ._compat import iteritems
 from .type_info import TypeInfo
 from sentinels import NOTHING
 
+class FieldBinding(object):
+
+    def __init__(self, field):
+        super(FieldBinding, self).__init__()
+        self.field = field
+
+    def get_api_value_from_object(self, obj):
+        return getattr(obj, "get_{0}".format(self.field.name))()
+
+    def set_object_value_from_api(self, obj, api_value):
+        getattr(obj, "set_{0}".format(self.field.name))(api_value)
+
+
+
 class Field(object):
     """
     This class represents a single field exposed by a schema
     """
 
-    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False, default=NOTHING, is_identity=False, is_filterable=False, getter_func=None, setter_func=None, optional=False):
+    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False, default=NOTHING, is_identity=False, is_filterable=False, binding=None, optional=False):
         super(Field, self).__init__()
 
         #:the name of this field, as will be seen by the Python code interacting with the object(s)
@@ -36,24 +50,12 @@ class Field(object):
         self.is_identity = is_identity
         #:Can we filter objects according to this field
         self.is_filterable = is_filterable
-        #:An optional getter to obtain the field value from existing objects
-        self.getter_func = getter_func
-        #:An optional setter to set the field value of existing object
-        self.setter_func = setter_func
+        #:Controls how the API value is computed from an existing Python object, and how the respective field is
+        #:updated on an object.
+        self.binding = FieldBinding(self) if binding is None else binding
         #:If specified, will be used to generate defaults for this field if required and not specified by the user.
         #:Can be either a value or a callable generating a default
         self._default = default
-
-    def get_from_object(self, obj):
-        if self.getter_func is not None:
-            return self.getter_func(obj)
-        return getattr(obj, self.name)
-
-    def set_object(self, obj, value):
-        if self.setter_func is not None:
-            return self.setter_func(obj, value)
-        return setattr(obj, self.name, value)
-
 
     def generate_default(self):
         if hasattr(self._default, "__call__"):
