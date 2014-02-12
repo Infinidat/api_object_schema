@@ -1,22 +1,9 @@
 import operator
 
 from ._compat import iteritems
+from .binding import NoBinding
 from .type_info import TypeInfo
 from sentinels import NOTHING
-
-class FieldBinding(object):
-
-    def __init__(self, field):
-        super(FieldBinding, self).__init__()
-        self.field = field
-
-    def get_api_value_from_object(self, obj):
-        return getattr(obj, "get_{0}".format(self.field.name))()
-
-    def set_object_value_from_api(self, obj, api_value):
-        getattr(obj, "set_{0}".format(self.field.name))(api_value)
-
-
 
 class Field(object):
     """
@@ -52,10 +39,14 @@ class Field(object):
         self.is_filterable = is_filterable
         #:Controls how the API value is computed from an existing Python object, and how the respective field is
         #:updated on an object.
-        self.binding = FieldBinding(self) if binding is None else binding
+        self.binding = self.get_default_binding_object() if binding is None else binding
+        self.binding.set_field(self)
         #:If specified, will be used to generate defaults for this field if required and not specified by the user.
         #:Can be either a value or a callable generating a default
         self._default = default
+
+    def get_default_binding_object(self):
+        return NoBinding()
 
     def generate_default(self):
         if hasattr(self._default, "__call__"):
