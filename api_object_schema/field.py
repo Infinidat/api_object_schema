@@ -10,7 +10,7 @@ class Field(object):
     This class represents a single field exposed by a schema
     """
 
-    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False, default=NOTHING, is_identity=False, is_filterable=False, binding=None, optional=False):
+    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False, default=NOTHING, is_identity=False, is_filterable=False, is_sortable=False, binding=None, optional=False):
         super(Field, self).__init__()
 
         #:the name of this field, as will be seen by the Python code interacting with the object(s)
@@ -37,6 +37,8 @@ class Field(object):
         self.is_identity = is_identity
         #:Can we filter objects according to this field
         self.is_filterable = is_filterable
+        #:Can we sort according to this field?
+        self.is_sortable = is_sortable
         #:Controls how the API value is computed from an existing Python object, and how the respective field is
         #:updated on an object.
         self.binding = self.get_default_binding_object() if binding is None else binding
