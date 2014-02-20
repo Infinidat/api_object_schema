@@ -50,6 +50,9 @@ class Field(object):
     def get_default_binding_object(self):
         return NoBinding()
 
+    def notify_added_to_class(self, cls):
+        pass
+
     def generate_default(self):
         if hasattr(self._default, "__call__"):
             return self._default()

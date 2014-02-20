@@ -15,6 +15,7 @@ class FieldsMeta(type):
 
         for field in classdict.get("FIELDS", []):
             fields.add_field(field)
+            field.notify_added_to_class(returned)
 
         return returned
 
