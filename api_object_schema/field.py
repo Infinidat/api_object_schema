@@ -1,6 +1,3 @@
-import operator
-
-from ._compat import iteritems
 from .binding import NoBinding
 from .type_info import TypeInfo
 from sentinels import NOTHING
@@ -10,7 +7,7 @@ class Field(object):
     This class represents a single field exposed by a schema
     """
 
-    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False, default=NOTHING, is_identity=False, is_filterable=False, is_sortable=False, binding=None, optional=False):
+    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False, default=NOTHING, is_identity=False, is_filterable=False, is_sortable=False, binding=None, optional=False, sorting_key=None):
         super(Field, self).__init__()
 
         #:the name of this field, as will be seen by the Python code interacting with the object(s)
@@ -46,6 +43,9 @@ class Field(object):
         #:If specified, will be used to generate defaults for this field if required and not specified by the user.
         #:Can be either a value or a callable generating a default
         self._default = default
+        #:If sortable field, will be used to get sorting key
+        self.sorting_key = sorting_key
+
 
     def get_default_binding_object(self):
         return NoBinding()
