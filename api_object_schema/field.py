@@ -1,3 +1,4 @@
+from ._compat import string_types, PY2
 from .binding import NoBinding
 from .type_info import TypeInfo
 from sentinels import NOTHING
@@ -57,3 +58,22 @@ class Field(object):
         if hasattr(self._default, "__call__"):
             return self._default()
         return self._default
+
+    def externalize(self, obj):
+        field_value = self.binding.get_api_value_from_object(obj)
+        api_value = self.type.translator.to_api(field_value)
+        api_value = self.type.api_type(api_value)
+        return api_value
+
+    def get_internal_value(self, data):
+        internal_value = self.type.translator.from_api(data)
+        validation_type = self.type.type
+        if PY2 and validation_type == str:
+            validation_type = string_types
+        if not isinstance(internal_value, validation_type):
+            raise TypeError()
+        return internal_value
+
+    def internalize(self, obj, data):
+        internal_value = self.get_internal_value(data)
+        return self.binding.set_object_value_from_api(obj, internal_value)
