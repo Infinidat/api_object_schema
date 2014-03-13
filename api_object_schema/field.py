@@ -8,7 +8,7 @@ class Field(object):
     This class represents a single field exposed by a schema
     """
 
-    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False, default=NOTHING, is_identity=False, is_filterable=False, is_sortable=False, binding=None, optional=False, sorting_key=None):
+    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False, default=NOTHING, is_identity=False, is_filterable=False, is_sortable=False, binding=None, optional=False, sorting_key=None, is_visible=True):
         super(Field, self).__init__()
 
         #:the name of this field, as will be seen by the Python code interacting with the object(s)
@@ -46,6 +46,8 @@ class Field(object):
         self._default = default
         #:If sortable field, will be used to get sorting key
         self.sorting_key = sorting_key
+        #:If specified, will return if a field should be visible for specific object
+        self._is_visible = is_visible
 
 
     def get_default_binding_object(self):
@@ -58,6 +60,11 @@ class Field(object):
         if hasattr(self._default, "__call__"):
             return self._default()
         return self._default
+
+    def get_is_visible(self, obj):
+        if hasattr(self._is_visible, "__call__"):
+            return self._is_visible(obj)
+        return self._is_visible
 
     def externalize(self, obj):
         field_value = self.binding.get_api_value_from_object(obj)
