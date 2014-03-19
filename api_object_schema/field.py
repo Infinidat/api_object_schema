@@ -76,8 +76,10 @@ class Field(object):
         validation_type = self.type.api_type
         if PY2 and validation_type is str:
             validation_type = string_types
-        if data is not None and not isinstance(data, validation_type):
+
+        if (validation_type is not bool and isinstance(data, bool)) or (data is not None and not isinstance(data, validation_type)):
             raise TypeError("{0!r} is not of field internal type(s) {1!r}".format(data, validation_type))
+
         internal_value = self.type.translator.from_api(data)
         return internal_value
 
