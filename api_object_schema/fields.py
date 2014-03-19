@@ -48,7 +48,7 @@ class Fields(object):
     def get_identity_fields(self):
         return self._identity_fields
 
-    def get_all_field_names(self, api_object_json):
+    def get_all_field_names_or_fabricate(self, api_object_json):
         """
         Given an example of an object from the system's API, returns the formal set of field names supported
         by this object type (after transformation to logical names)
