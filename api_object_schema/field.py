@@ -73,12 +73,12 @@ class Field(object):
         return api_value
 
     def get_internal_value(self, data):
-        internal_value = self.type.translator.from_api(data)
-        validation_type = self.type.type
+        validation_type = self.type.api_type
         if PY2 and validation_type is str:
             validation_type = string_types
-        if internal_value is not None and not isinstance(internal_value, validation_type):
-            raise TypeError("{0!r} is not of field internal type(s) {1!r}".format(internal_value, validation_type))
+        if data is not None and not isinstance(data, validation_type):
+            raise TypeError("{0!r} is not of field internal type(s) {1!r}".format(data, validation_type))
+        internal_value = self.type.translator.from_api(data)
         return internal_value
 
     def internalize(self, obj, data):
