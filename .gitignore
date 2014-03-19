@@ -1,4 +1,5 @@
 *.pyc
+.coverage
 .vagrant
 *.egg-info
 build
