@@ -77,6 +77,9 @@ class Field(object):
         if PY2 and validation_type is str:
             validation_type = string_types
 
+        if PY2 and validation_type is int:
+            validation_type = (int, long)
+
         if (validation_type is not bool and isinstance(data, bool)) or (data is not None and not isinstance(data, validation_type)):
             raise TypeError("{0!r} is not of field internal type(s) {1!r}".format(data, validation_type))
 
