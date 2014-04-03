@@ -63,18 +63,29 @@ def test_function_binding():
     def set_value(obj, value):
         obj['some_attr'] = value
 
-    binding = FunctionBinding(get_func=get_value, set_func=set_value)
-    field = Field(name="field_name", binding=binding)
+    binding_func = lambda: FunctionBinding(get_func=get_value, set_func=set_value)
+    str_field = Field(name="field_name", type=str, binding=binding_func())
+    int_field = Field(name="field_name", type=int, binding=binding_func())
     obj = {}
 
-    binding.set_object_value_from_api(obj, 'a value')
-    assert binding.get_api_value_from_object(obj) == 'a value'
+    str_value = 'a value'
+    int_value = 5
 
-    field.internalize(obj, 'a value')
-    assert field.externalize(obj)  =='a value'
+    binding = binding_func()
+    binding.set_object_value_from_api(obj, str_value)
+    assert binding.get_api_value_from_object(obj) == str_value
+    binding.set_object_value_from_api(obj, int_value)
+    assert binding.get_api_value_from_object(obj) == int_value
 
+    str_field.internalize(obj, str_value)
+    assert str_field.externalize(obj) == str_value
     with pytest.raises(TypeError):
-        field.internalize(obj, 5)
+        int_field.internalize(obj, str_value)
+
+    int_field.internalize(obj, int_value)
+    assert int_field.externalize(obj) == int_value
+    with pytest.raises(TypeError):
+        str_field.internalize(obj, int_value)
 
 def test_const_binding():
     binding = ConstBinding('some_value')
