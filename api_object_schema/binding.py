@@ -68,8 +68,11 @@ class ConstBinding(FieldBinding):
         return self._value
 
 class CountBinding(FieldBinding):
-    def __init__(self, list_to_sum_name):
-        self._list_name = list_to_sum_name
+    def __init__(self, list_to_sum_name_or_func):
+        self._list_name_or_func = list_to_sum_name_or_func
 
     def get_api_value_from_object(self, obj):
-        return len(getattr(obj, self._list_name))
+        list_to_sum = getattr(obj, self._list_name_or_func)
+        if hasattr(list_to_sum, "__call__"):
+            list_to_sum = list_to_sum()
+        return len(list_to_sum)

@@ -94,11 +94,14 @@ def test_const_binding():
     with pytest.raises(NotImplementedError):
         binding.set_object_value_from_api(None, None)
 
-def test_count_binding():
+@pytest.mark.parametrize("list_name", ["a_list", "get_a_list"])
+def test_count_binding(list_name):
     class Obj(object):
         a_list = ['a', 'b', 'c']
-    field = Field(name="field_name", type=list, binding=CountBinding('a_list'))
+        def get_a_list(self):
+            return self.a_list
 
+    field = Field(name="field_name", type=list, binding=CountBinding(list_name))
     assert field.binding.get_api_value_from_object(Obj()) == 3
 
     with pytest.raises(NotImplementedError):
