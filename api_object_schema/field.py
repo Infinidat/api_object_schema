@@ -69,7 +69,8 @@ class Field(object):
     def externalize(self, obj):
         field_value = self.binding.get_api_value_from_object(obj)
         api_value = self.type.translator.to_api(field_value)
-        api_value = self.type.api_type(api_value)
+        if api_value is not None:
+            api_value = self.type.api_type(api_value)
         return api_value
 
     def get_internal_value(self, data):

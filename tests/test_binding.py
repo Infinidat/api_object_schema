@@ -87,6 +87,12 @@ def test_function_binding():
     with pytest.raises(TypeError):
         str_field.internalize(obj, int_value)
 
+    int_field.internalize(obj, None)
+    assert int_field.externalize(obj) is None
+
+    str_field.internalize(obj, None)
+    assert str_field.externalize(obj) is None
+
 def test_const_binding():
     binding = ConstBinding('some_value')
     assert binding.get_api_value_from_object(None) == 'some_value'
