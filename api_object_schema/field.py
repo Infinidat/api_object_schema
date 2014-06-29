@@ -66,13 +66,6 @@ class Field(object):
             return self._is_visible(obj)
         return self._is_visible
 
-    def externalize(self, obj):
-        field_value = self.binding.get_api_value_from_object(obj)
-        api_value = self.type.translator.to_api(field_value)
-        if api_value is not None:
-            api_value = self.type.api_type(api_value)
-        return api_value
-
     def get_internal_value(self, data):
         validation_type = self.type.api_type
         if PY2 and validation_type is str:
@@ -86,7 +79,3 @@ class Field(object):
 
         internal_value = self.type.translator.from_api(data)
         return internal_value
-
-    def internalize(self, obj, data):
-        internal_value = self.get_internal_value(data)
-        return self.binding.set_object_value_from_api(obj, internal_value)
