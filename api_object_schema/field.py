@@ -1,4 +1,3 @@
-from ._compat import string_types, PY2
 from .binding import NoBinding
 from .type_info import TypeInfo
 from sentinels import NOTHING
@@ -66,16 +65,3 @@ class Field(object):
             return self._is_visible(obj)
         return self._is_visible
 
-    def get_internal_value(self, data):
-        validation_type = self.type.api_type
-        if PY2 and validation_type is str:
-            validation_type = string_types
-
-        if PY2 and validation_type is int:
-            validation_type = (int, long)
-
-        if (validation_type is not bool and isinstance(data, bool)) or (data is not None and not isinstance(data, validation_type)):
-            raise TypeError("{0!r} is not of field internal type(s) {1!r}".format(data, validation_type))
-
-        internal_value = self.type.translator.from_api(data)
-        return internal_value

@@ -1,5 +1,9 @@
 import itertools
 
+from ._compat import PY2, string_types
+from .utils import loose_isinstance
+
+
 class ObjectAPIBinding(object):
 
     """This class is responsible for describing how an API object field translates into a Pythonic
@@ -60,14 +64,31 @@ class ObjectAPIBinding(object):
         returned = api_value
         for translator in itertools.chain(self.from_api_translators, [self._normalize_value]):
             returned = translator(returned)
-        assert isinstance(returned, self._field.type.type)
+        assert returned is None or loose_isinstance(returned, self._field.type.type)
         return returned
 
     def _normalize_value(self, value):
-        return self._field.type.type(value)
+        return self._coerce(value, self._field.type.type)
 
     def _normalize_api_value(self, value):
-        return self._field.type.api_type(value)
+        return self._coerce(value, self._field.type.api_type)
+
+    def _coerce(self, value, result_type):
+        if value is None:
+            return None
+
+        if PY2 and result_type is str:
+            result_type = string_types
+
+        if PY2 and result_type is int:
+            result_type = (int, long)
+
+        if not isinstance(value, result_type):
+            if isinstance(result_type, tuple):
+                value = result_type[0](value)
+            else:
+                value = result_type(value)
+        return value
 
     def get_api_value_from_object(self, system, objtype, obj):
         """Retrieves the API representation of the field from a whole Pythonic object containing it.
@@ -85,10 +106,11 @@ class ObjectAPIBinding(object):
         :param obj: the object itself. May be ``None``.
         :param value: the Pythonic value for the field
         """
+        returned = value
         for translator in itertools.chain(self.to_api_translators, [self._normalize_api_value]):
-            value = translator(value)
-        assert isinstance(value, self._field.type.api_type)
-        return value
+            returned = translator(returned)
+        assert returned is None or loose_isinstance(returned, self._field.type.api_type)
+        return returned
 
     def set_object_value(self, system, objtype, obj, value):
         """Controls how a Pythonic value is set for a Pythonic object
@@ -124,10 +146,10 @@ class ObjectAPIBinding(object):
 class NoBinding(ObjectAPIBinding):
 
     def get_api_value_from_value(self, *args):
-        raise NotImplementedError() # pragma: no cover
+        raise NotImplementedError()  # pragma: no cover
 
     def get_value_from_api_value(self, *args):
-        raise NotImplementedError() # pragma: no cover
+        raise NotImplementedError()  # pragma: no cover
 
 
 class AttributeBinding(ObjectAPIBinding):
@@ -164,6 +186,7 @@ class MethodBinding(ObjectAPIBinding):
 class FunctionBinding(ObjectAPIBinding):
 
     def __init__(self, get_func=None, set_func=None):
+        super(FunctionBinding, self).__init__()
         self._get_func = get_func
         self._set_func = set_func
 
@@ -187,6 +210,7 @@ class EmptyBinding(ObjectAPIBinding):
 class ConstBinding(ObjectAPIBinding):
 
     def __init__(self, value):
+        super(ConstBinding, self).__init__()
         self._value = value
 
     def get_object_value(self, system, objtype, obj):
@@ -196,6 +220,7 @@ class ConstBinding(ObjectAPIBinding):
 class CountBinding(ObjectAPIBinding):
 
     def __init__(self, list_to_sum_name_or_func):
+        super(CountBinding, self).__init__()
         self._list_name_or_func = list_to_sum_name_or_func
 
     def get_object_value(self, system, objtype, obj):
