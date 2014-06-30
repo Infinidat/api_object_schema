@@ -62,7 +62,7 @@ class ObjectAPIBinding(object):
         :param api_value: the raw API value for this field
         """
         returned = api_value
-        for translator in itertools.chain(self.from_api_translators, [self._normalize_value]):
+        for translator in itertools.chain(self.from_api_translators, [self._field.type.translator.from_api, self._normalize_value]):
             returned = translator(returned)
         assert returned is None or loose_isinstance(returned, self._field.type.type)
         return returned
@@ -74,21 +74,15 @@ class ObjectAPIBinding(object):
         return self._coerce(value, self._field.type.api_type)
 
     def _coerce(self, value, result_type):
+
         if value is None:
             return None
 
-        if PY2 and result_type is str:
-            result_type = string_types
-
-        if PY2 and result_type is int:
-            result_type = (int, long)
-
         if not isinstance(value, result_type):
-            if isinstance(result_type, tuple):
-                value = result_type[0](value)
-            else:
-                value = result_type(value)
+            value = result_type(value)
+
         return value
+
 
     def get_api_value_from_object(self, system, objtype, obj):
         """Retrieves the API representation of the field from a whole Pythonic object containing it.
@@ -107,7 +101,7 @@ class ObjectAPIBinding(object):
         :param value: the Pythonic value for the field
         """
         returned = value
-        for translator in itertools.chain(self.to_api_translators, [self._normalize_api_value]):
+        for translator in itertools.chain(self.to_api_translators, [self._field.type.translator.to_api, self._normalize_api_value]):
             returned = translator(returned)
         assert returned is None or loose_isinstance(returned, self._field.type.api_type)
         return returned
@@ -121,8 +115,8 @@ class ObjectAPIBinding(object):
         """Controls how an API value is set for a Pythonic object
         """
         value = self.get_value_from_api_value(
-            system, objtype, obj, self._field, api_value)
-        self.set_object_value(system, objtype, obj, self._field, value)
+            system, objtype, obj, api_value)
+        self.set_object_value(system, objtype, obj, value)
 
     def get_object_value(self, system, objtype, obj):
         """Controls how a Pythonic value is fetched from a Pythonic object
@@ -177,7 +171,7 @@ class MethodBinding(ObjectAPIBinding):
             self._field.name)
         return getattr(obj, getter_method_name)()
 
-    def set_object_value(self, obj, value):
+    def set_object_value(self, system, objtype, obj, value):
         setter_method_name = self._setter_method_name or "set_{0}".format(
             self._field.name)
         return getattr(obj, setter_method_name)(value)
@@ -195,7 +189,7 @@ class FunctionBinding(ObjectAPIBinding):
             return self._get_func(obj)
         raise NotImplementedError()  # pragma: no cover
 
-    def set_object_value(self, obj, value):
+    def set_object_value(self, system, objtype, obj, value):
         if self._set_func:
             return self._set_func(obj, value)
         raise NotImplementedError()  # pragma: no cover
