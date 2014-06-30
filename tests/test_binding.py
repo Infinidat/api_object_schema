@@ -52,7 +52,7 @@ def test_method_binding():
 
     field = Field(name="attr", binding=MethodBinding())
     obj = Obj()
-    field.binding.set_object_value(obj, 'bla')
+    field.binding.set_object_value(object(), type(obj), obj, 'bla')
     assert field.binding.get_object_value(None, type(obj), obj) == 'bla'
 
 
@@ -73,9 +73,9 @@ def test_function_binding():
     int_value = 5
 
     binding = binding_func()
-    binding.set_object_value(obj, str_value)
+    binding.set_object_value(None, type(obj), obj, str_value)
     assert binding.get_object_value(None, type(obj), obj) == str_value
-    binding.set_object_value(obj, int_value)
+    binding.set_object_value(None, type(obj), obj, int_value)
     assert binding.get_object_value(None, type(obj), obj) == int_value
 
 def test_const_binding():
