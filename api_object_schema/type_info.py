@@ -1,13 +1,15 @@
+from ._compat import string_types
+
 from .value_translator import IdentityTranslator
 
 class TypeInfo(object):
 
     def __init__(self, type, api_type=None, min_length=None, max_length=None, charset=None, max=None, min=None, translator=IdentityTranslator()):
         super(TypeInfo, self).__init__()
-        self.type = type
-        if api_type is None:
-            api_type = type
-        self.api_type = api_type
+
+        self._type = type
+        self._api_type = api_type
+        self._resolved = False
 
         #: minimum length for parameter
         self.min_length = min_length
@@ -24,6 +26,24 @@ class TypeInfo(object):
         #:translator to be used when passing values to/from the API
         self.translator = translator
 
+    @property
+    def type(self):
+        if not self._resolved:
+            self._resolve()
+        return self._type
+
+    @property
+    def api_type(self):
+        if not self._resolved:
+            self._resolve()
+        return self._api_type
+
+    def _resolve(self):
+        if isinstance(self._type, string_types):
+            self._type = _import_type_by_name(self._type)
+        if self._api_type is None:
+            self._api_type = self._type
+        self._resolved = True
 
     def is_valid_value(self, value):
         """
@@ -55,3 +75,18 @@ class TypeInfo(object):
             return (False, "Too long")
 
         return (True, None)
+
+def _import_type_by_name(typename):
+    if typename.count(':') != 1:
+        raise ValueError('Invalid type string: {0!r}'.format(typename))
+
+    module_name, type_name = typename.split(':')
+    try:
+        module = __import__(module_name, fromlist=[''])
+
+        if not hasattr(module, type_name):
+            raise ImportError()
+    except ImportError:
+        raise ValueError('Invalid type string: {0!r} (import failed)'.format(typename))
+
+    return getattr(module, type_name)
