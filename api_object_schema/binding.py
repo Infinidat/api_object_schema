@@ -78,7 +78,7 @@ class ObjectAPIBinding(object):
         if value is None:
             return None
 
-        if not isinstance(value, result_type):
+        if not loose_isinstance(value, result_type):
             value = result_type(value)
 
         return value
