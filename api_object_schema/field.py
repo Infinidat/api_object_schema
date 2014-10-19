@@ -1,6 +1,10 @@
+import copy
+
+from sentinels import NOTHING
+
 from .binding import NoBinding
 from .type_info import TypeInfo
-from sentinels import NOTHING
+
 
 class Field(object):
     """
@@ -47,7 +51,13 @@ class Field(object):
         self.sorting_key = sorting_key
         #:If specified, will return if a field should be visible for specific object
         self._is_visible = is_visible
+        self.object = None
 
+    def clone_bound(self, obj):
+        assert self.object is None
+        returned = copy.copy(self)
+        returned.object = obj
+        return returned
 
     def get_default_binding_object(self):
         return NoBinding()
@@ -64,4 +74,3 @@ class Field(object):
         if hasattr(self._is_visible, "__call__"):
             return self._is_visible(obj)
         return self._is_visible
-

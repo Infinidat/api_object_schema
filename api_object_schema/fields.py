@@ -1,5 +1,8 @@
 from ._compat import itervalues, iterkeys
 from .field import Field
+from .bound_fields import BoundFields
+
+_CACHED_FIELDS_ATTR = '_cached__bound_fields'
 
 class FieldsMeta(type):
 
@@ -27,6 +30,15 @@ class Fields(object):
         self._fields_by_api_name = {}
         self._identity_fields = []
         self._field_factory = field_factory
+
+    def __get__(self, obj, objclass):
+        if obj is None:
+            return self
+        returned = getattr(obj, _CACHED_FIELDS_ATTR, None)
+        if returned is None:
+            returned = BoundFields(self, obj)
+            setattr(obj, _CACHED_FIELDS_ATTR, returned)
+        return returned
 
     @classmethod
     def from_fields_list(cls, fields, **kwargs):
@@ -81,6 +93,9 @@ class Fields(object):
 
     def __getitem__(self, item):
         return self._fields[item]
+
+    def __contains__(self, item):
+        return item in self._fields
 
     def __iter__(self):
         return itervalues(self._fields)

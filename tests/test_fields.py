@@ -8,6 +8,18 @@ class MyObj(object):
     pass
 
 
+def test_bound_fields(obj):
+    assert obj.fields.field_a.object is obj
+
+    bound_field = obj.fields.field_a
+    for attr in dir(bound_field):
+        if attr.startswith('__') or hasattr(getattr(bound_field, attr), '__call__'):
+            continue
+        if attr == 'object':
+            continue
+        assert getattr(bound_field, attr) is getattr(obj.FIELDS[0], attr)
+
+
 def test_field_string_types():
 
     f = Field('name', type='{0}:MyObj'.format(__name__))
@@ -41,13 +53,7 @@ def test_get_or_fabricate(fields, field):
     assert fields.get_or_fabricate("fake_field").name == "fake_field"
 
 
-def test_get_all_field_names():
-    class ObjectWithFields(with_metaclass(FieldsMeta)):
-        FIELDS = [
-            Field(name="field_a"),
-            Field(name="field_b", api_name="field_b_api_name"),
-        ]
-    obj = ObjectWithFields()
+def test_get_all_field_names(obj):
     fields_json = {"field_a": "", "field_b_api_name": "", "fake_field": ""}
     expected = set(["field_a", "field_b", "fake_field"])
     assert obj.fields.get_all_field_names_or_fabricate(fields_json) == expected
@@ -99,3 +105,14 @@ def fields(field):
     returned = Fields()
     returned.add_field(field)
     return returned
+
+
+@pytest.fixture
+def obj():
+    class ObjectWithFields(with_metaclass(FieldsMeta)):
+        FIELDS = [
+            Field(name="field_a"),
+            Field(name="field_b", api_name="field_b_api_name"),
+        ]
+    obj = ObjectWithFields()
+    return obj
