@@ -3,8 +3,10 @@ from api_object_schema._compat import with_metaclass
 from api_object_schema import Field, Fields, FieldsMeta
 from sentinels import NOTHING
 
+
 class MyObj(object):
     pass
+
 
 def test_field_string_types():
 
