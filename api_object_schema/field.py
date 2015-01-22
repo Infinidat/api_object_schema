@@ -1,5 +1,3 @@
-import copy
-
 from sentinels import NOTHING
 
 from .binding import NoBinding
@@ -51,13 +49,6 @@ class Field(object):
         self.sorting_key = sorting_key
         #:If specified, will return if a field should be visible for specific object
         self._is_visible = is_visible
-        self.object = None
-
-    def clone_bound(self, obj):
-        assert self.object is None
-        returned = copy.copy(self)
-        returned.object = obj
-        return returned
 
     def get_default_binding_object(self):
         return NoBinding()

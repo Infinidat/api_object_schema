@@ -8,18 +8,6 @@ class MyObj(object):
     pass
 
 
-def test_bound_fields(obj):
-    assert obj.fields.field_a.object is obj
-
-    bound_field = obj.fields.field_a
-    for attr in dir(bound_field):
-        if attr.startswith('__') or hasattr(getattr(bound_field, attr), '__call__'):
-            continue
-        if attr == 'object':
-            continue
-        assert getattr(bound_field, attr) is getattr(obj.FIELDS[0], attr)
-
-
 def test_field_string_types():
     f = Field('name', type='{0}:MyObj'.format(__name__))
     assert f.type.type is MyObj
@@ -91,6 +79,10 @@ def test_get_is_visible():
     assert Field(name="field_name", is_visible=lambda obj:
                  obj['some_val']).get_is_visible(obj) is None
 
+
+def test_fields_contains(field):
+    fields = Fields.from_fields_list([field])
+    assert field in fields
 
 # Fixtures
 @pytest.fixture
