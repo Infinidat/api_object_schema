@@ -85,6 +85,13 @@ def test_const_binding():
     with pytest.raises(NotImplementedError):
         binding.set_object_value(None, None, None, None)
 
+def test_empty_binding():
+    field = Field(name='empty_attr', type=list, binding=EmptyBinding())
+    assert field.binding.get_object_value(None, None, None) == []
+
+    with pytest.raises(NotImplementedError):
+        field.binding.set_object_value(None, None, None, None)
+
 
 @pytest.mark.parametrize("list_name", ["a_list", "get_a_list"])
 def test_count_binding(list_name):

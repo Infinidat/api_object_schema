@@ -21,12 +21,11 @@ def test_bound_fields(obj):
 
 
 def test_field_string_types():
-
     f = Field('name', type='{0}:MyObj'.format(__name__))
     assert f.type.type is MyObj
 
 
-@pytest.mark.parametrize('invalid_type', ['a', 'a.b.c', __name__, 'x:y:z', 'x:y'])
+@pytest.mark.parametrize('invalid_type', ['a', 'a.b.c', __name__, 'x:y:z', 'x:y', __name__+':NonExistClass'])
 def test_field_invalid_string_types(invalid_type):
     f = Field('name', type=invalid_type)
     with pytest.raises(ValueError) as caught:
