@@ -210,6 +210,8 @@ class ConstBinding(ObjectAPIBinding):
     def get_object_value(self, system, objtype, obj):
         return self._value
 
+    def get_value_from_api_object(self, system, objtype, obj, api_obj):
+        return self._value
 
 class CountBinding(ObjectAPIBinding):
 

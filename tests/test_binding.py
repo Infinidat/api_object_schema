@@ -81,6 +81,7 @@ def test_function_binding():
 def test_const_binding():
     binding = ConstBinding('some_value')
     assert binding.get_object_value(None, None, None) == 'some_value'
+    assert binding.get_value_from_api_object(None, None, None, None) == 'some_value'
 
     with pytest.raises(NotImplementedError):
         binding.set_object_value(None, None, None, None)
