@@ -4,6 +4,10 @@ python:
   - "2.7"
   - "3.3"
   - "3.4"
+  - "3.5"
   - "pypy"
+install:
+  - pip install 'pytest>=2.9'
+  - pip install -e .
 script: 
-  - "python _test_build.py"
+  - py.test tests
