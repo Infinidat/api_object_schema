@@ -57,7 +57,7 @@ class TypeInfo(object):
 
     def is_valid_value_explain(self, value):
         """
-        :rtype: A tuple of (is_valid, reason)
+        :return: A tuple of (is_valid, reason)
         """
         if type(value) is not self.type:  # pylint: disable=unidiomatic-typecheck
             return (False, "Invalid type")
