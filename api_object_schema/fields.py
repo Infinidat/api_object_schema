@@ -6,7 +6,7 @@ class FieldsMeta(type):
 
     FIELD_FACTORY = Field
 
-    def __new__(cls, classname, bases, classdict):
+    def __new__(cls, classname, bases, classdict):  # pylint: disable=bad-mcs-classmethod-argument
         returned = type.__new__(cls, classname, bases, classdict)
         returned.fields = fields = Fields(field_factory=cls.FIELD_FACTORY)
         for base in bases:
@@ -19,6 +19,7 @@ class FieldsMeta(type):
             field.notify_added_to_class(returned)
 
         return returned
+
 
 class Fields(object):
 

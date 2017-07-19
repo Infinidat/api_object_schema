@@ -1,5 +1,6 @@
 from .special_value import SpecialValue
 
+
 class ValueTranslator(object):
     """
     This is an abstract base for translator objects.
@@ -29,7 +30,8 @@ class ValueTranslator(object):
     def _from_api(self, value):
         raise NotImplementedError() # pragma: no cover
 
-class FunctionTranslator(ValueTranslator):
+
+class FunctionTranslator(ValueTranslator):  # pylint: disable=abstract-method
     """
     Implements value translation with the use of functions
     """
@@ -41,7 +43,8 @@ class FunctionTranslator(ValueTranslator):
         if from_api is not None:
             self._from_api = from_api
 
-class IdentityTranslator(ValueTranslator):
+
+class IdentityTranslator(ValueTranslator):  # pylint: disable=abstract-method
     def identity(self, value):
         return value
 

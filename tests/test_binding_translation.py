@@ -2,6 +2,7 @@ import pytest
 
 from api_object_schema import Field, MethodBinding
 
+# pylint: disable=redefined-outer-name
 
 def test_translators(field, obj):
     assert len(field.binding.to_api_translators) == 1
@@ -24,4 +25,5 @@ def obj():
 
 @pytest.fixture
 def field():
-    return Field('some_field', type=int, binding=MethodBinding('f').to_api(lambda x : x * 2).from_api(lambda x: int(x // 2)))
+    field_binding = MethodBinding('f').to_api(lambda x: x * 2).from_api(lambda x: int(x // 2))
+    return Field('some_field', type=int, binding=field_binding)
