@@ -1,9 +1,10 @@
 Changelog
 =========
 
+* :feature:`3` Allow changing a field's default value after creation
 * :feature:`2` Support a way to forbid field names/api_names overrides
 * :feature:`-` Support documentation (currently only changelog)
-* :feature:`-` Add python3.6 & remove python 2.6, 3.3 & 3.4 from travis
+* :feature:`-` Add python 3.6 & remove python 2.6, 3.3 & 3.4 from travis
 * :release:`1.5.1 <02-02-2015>`
 * :feature:`-` ConstBinding should return the const from api object
 * :feature:`-` Remove support for bound fields

@@ -59,6 +59,9 @@ class Field(object):
     def notify_added_to_class(self, cls):
         pass
 
+    def set_default(self, default):
+        self._default = default
+
     def generate_default(self):
         if hasattr(self._default, "__call__"):
             return self._default()

@@ -73,6 +73,15 @@ def test_generate_field_default():
                  True).generate_default() is True
 
 
+def test_set_field_default():
+    field = Field(name="field_name")
+    assert field.generate_default() is NOTHING
+    field.set_default(1)
+    assert field.generate_default() == 1
+    field.set_default(lambda: True)
+    assert field.generate_default() is True
+
+
 def test_get_is_visible():
     obj = {'some_val': None}
     assert Field(name="field_name").get_is_visible(obj) is True
