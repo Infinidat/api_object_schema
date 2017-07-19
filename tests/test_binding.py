@@ -65,8 +65,8 @@ def test_function_binding():
 
     binding_func = lambda: FunctionBinding(
         get_func=get_value, set_func=set_value)
-    str_field = Field(name="field_name", type=str, binding=binding_func())
-    int_field = Field(name="field_name", type=int, binding=binding_func())
+    str_field = Field(name="field_name", type=str, binding=binding_func())  # pylint: disable=unused-variable
+    int_field = Field(name="field_name", type=int, binding=binding_func())  # pylint: disable=unused-variable
     obj = {}
 
     str_value = 'a value'

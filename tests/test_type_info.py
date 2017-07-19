@@ -38,7 +38,8 @@ def test_min_max_length():
     assert_valid(TypeInfo(str, max_length=5), "hey")
 
 def test_function_translator():
-    translator = FunctionTranslator(to_api=lambda val: str(val), from_api=lambda val: int(val))
+    translator = FunctionTranslator(
+        to_api=lambda val: str(val), from_api=lambda val: int(val))  # pylint: disable=unnecessary-lambda
     type_info = TypeInfo(type=int, api_type=str, translator=translator)
     special = SpecialValue()
 

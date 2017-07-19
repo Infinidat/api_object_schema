@@ -2,9 +2,12 @@ from ._compat import string_types
 
 from .value_translator import IdentityTranslator
 
+# pylint: disable=redefined-builtin
+
 class TypeInfo(object):
 
-    def __init__(self, type, api_type=None, min_length=None, max_length=None, charset=None, max=None, min=None, translator=IdentityTranslator()):
+    def __init__(self, type, api_type=None, min_length=None, max_length=None, charset=None, max=None, min=None,
+                 translator=IdentityTranslator()):
         super(TypeInfo, self).__init__()
 
         self._type = type
@@ -49,14 +52,14 @@ class TypeInfo(object):
         """
         Checks if a given value is valid given the type constraints
         """
-        result, reason = self.is_valid_value_explain(value)
+        result, _ = self.is_valid_value_explain(value)
         return result
 
     def is_valid_value_explain(self, value):
         """
         :rtype: A tuple of (is_valid, reason)
         """
-        if type(value) is not self.type:
+        if type(value) is not self.type:  # pylint: disable=unidiomatic-typecheck
             return (False, "Invalid type")
 
         if self.charset and not set(value).issubset(self.charset):

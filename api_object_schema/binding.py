@@ -1,8 +1,8 @@
 import itertools
 
-from ._compat import PY2, string_types
 from .utils import loose_isinstance
 
+# pylint: disable=unused-argument
 
 class ObjectAPIBinding(object):
 
@@ -126,10 +126,8 @@ class ObjectAPIBinding(object):
     def set_api_object_value(self, system, objtype, obj, api_obj, value):
         """Controls how a raw API object (or JSON dict) gets assigned a field from a Pythonic value
         """
-        api_value = self.get_api_value_from_value(
-            system, objtype, obj, self._field, value)
-        self.set_api_object_api_value(
-            system, objtype, obj, api_obj, api_value)
+        api_value = self.get_api_value_from_value(system, objtype, obj, value)
+        self.set_api_object_api_value(system, objtype, obj, api_obj, api_value)
 
     def set_api_object_api_value(self, system, objtype, obj, api_obj, api_value):
         """Controls how a raw API object (or JSON dict) gets assigned a field from an API value
@@ -139,10 +137,10 @@ class ObjectAPIBinding(object):
 
 class NoBinding(ObjectAPIBinding):
 
-    def get_api_value_from_value(self, *args):
+    def get_api_value_from_value(self, *args):  # pylint: disable=arguments-differ
         raise NotImplementedError()  # pragma: no cover
 
-    def get_value_from_api_value(self, *args):
+    def get_value_from_api_value(self, *args):  # pylint: disable=arguments-differ
         raise NotImplementedError()  # pragma: no cover
 
 
@@ -195,13 +193,13 @@ class FunctionBinding(ObjectAPIBinding):
         raise NotImplementedError()  # pragma: no cover
 
 
-class EmptyBinding(ObjectAPIBinding):
+class EmptyBinding(ObjectAPIBinding):  # pylint: disable=abstract-method
 
     def get_object_value(self, system, objtype, obj):
         return self._field.type.type()
 
 
-class ConstBinding(ObjectAPIBinding):
+class ConstBinding(ObjectAPIBinding):  # pylint: disable=abstract-method
 
     def __init__(self, value):
         super(ConstBinding, self).__init__()
@@ -213,7 +211,8 @@ class ConstBinding(ObjectAPIBinding):
     def get_value_from_api_object(self, system, objtype, obj, api_obj):
         return self._value
 
-class CountBinding(ObjectAPIBinding):
+
+class CountBinding(ObjectAPIBinding):  # pylint: disable=abstract-method
 
     def __init__(self, list_to_sum_name_or_func):
         super(CountBinding, self).__init__()

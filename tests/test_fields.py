@@ -1,8 +1,10 @@
 import pytest
-from api_object_schema._compat import with_metaclass
+from api_object_schema._compat import with_metaclass  # pylint: disable=no-name-in-module
 from api_object_schema import Field, Fields, FieldsMeta
 from sentinels import NOTHING
 
+
+# pylint: disable=redefined-outer-name
 
 class MyObj(object):
     pass
@@ -17,7 +19,7 @@ def test_field_string_types():
 def test_field_invalid_string_types(invalid_type):
     f = Field('name', type=invalid_type)
     with pytest.raises(ValueError) as caught:
-        f.type.type
+        f.type.type  # pylint: disable=pointless-statement
     assert 'Invalid type string: ' in str(caught.value)
 
 
@@ -54,7 +56,7 @@ def test_data_model_functions(fields):
     assert len(set(aliases)) == 1
 
     with pytest.raises(AttributeError):
-        fields.fake_name
+        fields.fake_name  # pylint: disable=pointless-statement
 
 
 def test_fields_fields(field):
@@ -73,7 +75,7 @@ def test_generate_field_default():
 
 def test_get_is_visible():
     obj = {'some_val': None}
-    assert Field(name="field_name").get_is_visible(obj) == True
+    assert Field(name="field_name").get_is_visible(obj) is True
     assert Field(name="field_name",
                  is_visible=False).get_is_visible(obj) is False
     assert Field(name="field_name", is_visible=lambda obj:

@@ -3,13 +3,16 @@ from sentinels import NOTHING
 from .binding import NoBinding
 from .type_info import TypeInfo
 
+# pylint: disable=redefined-builtin
 
 class Field(object):
     """
     This class represents a single field exposed by a schema
     """
 
-    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False, default=NOTHING, is_identity=False, is_filterable=False, is_sortable=False, binding=None, optional=False, sorting_key=None, is_visible=True):
+    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False,
+                 default=NOTHING, is_identity=False, is_filterable=False, is_sortable=False, binding=None,
+                 optional=False, sorting_key=None, is_visible=True):
         super(Field, self).__init__()
 
         #:the name of this field, as will be seen by the Python code interacting with the object(s)
