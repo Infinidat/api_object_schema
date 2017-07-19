@@ -12,7 +12,7 @@ class ValueTranslator(object):
         """
         Translates a value from Python to its API/json representation
 
-        :rtype: must be JSON encodable
+        :return: must be JSON encodable
         """
         if isinstance(value, SpecialValue):
             return value
