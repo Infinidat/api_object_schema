@@ -5,5 +5,7 @@
 build
 .tox
 flycheck-*
+flycheck_*
 dist
 .env
+.cache

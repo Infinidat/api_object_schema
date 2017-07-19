@@ -1,6 +1,7 @@
 Changelog
 =========
 
+* :feature:`2` Support a way to forbid field names/api_names overrides
 * :release:`1.5.1 <02-02-2015>`
 * :release:`1.5.0 <19-10-2014>`
 * :release:`1.4.3 <10-07-2014>`

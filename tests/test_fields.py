@@ -86,6 +86,28 @@ def test_fields_contains(field):
     fields = Fields.from_fields_list([field])
     assert field in fields
 
+
+def test_from_fields_list_with_names_duplications():
+    fields_list = [Field(name='field_name'), Field(name='field_name')]
+    fields = Fields.from_fields_list(fields_list)
+    field = fields.get('field_name')
+    assert field is not fields_list[0]
+    assert field is fields_list[-1]
+
+    with pytest.raises(AssertionError):
+        Fields.from_fields_list(fields_list, forbid_name_overrides=True)
+
+
+def test_from_fields_list_with_api_names_duplications():
+    fields_list = [Field(name='field_a', api_name='some_field'), Field(name='field_b', api_name='some_field')]
+    fields = Fields.from_fields_list(fields_list)
+    field = fields.get_by_api_name('some_field')
+    assert field is not fields_list[0]
+    assert field is fields_list[-1]
+
+    with pytest.raises(AssertionError):
+        Fields.from_fields_list(fields_list, forbid_api_name_overrides=True)
+
 # Fixtures
 @pytest.fixture
 def field():

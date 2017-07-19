@@ -23,12 +23,14 @@ class FieldsMeta(type):
 
 class Fields(object):
 
-    def __init__(self, field_factory=Field):
+    def __init__(self, field_factory=Field, forbid_api_name_overrides=False, forbid_name_overrides=False):
         super(Fields, self).__init__()
         self._fields = {}
         self._fields_by_api_name = {}
         self._identity_fields = []
         self._field_factory = field_factory
+        self._forbid_name_overrides = forbid_name_overrides
+        self._forbid_api_name_overrides = forbid_api_name_overrides
 
     @classmethod
     def from_fields_list(cls, fields, **kwargs):
@@ -42,6 +44,10 @@ class Fields(object):
             self.add_field(field)
 
     def add_field(self, field):
+        if self._forbid_name_overrides:
+            assert field.name not in self._fields
+        if self._forbid_api_name_overrides:
+            assert field.api_name not in self._fields_by_api_name
         self._fields[field.name] = field
         self._fields_by_api_name[field.api_name] = field
         if field.is_identity:
