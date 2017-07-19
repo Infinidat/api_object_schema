@@ -1,12 +1,21 @@
 language: python
 python:
-  - "2.7"
-  - "3.5"
-  - "3.6"
-  - "pypy"
+- '2.7'
+- '3.5'
+- '3.6'
+- pypy
 install:
-  - pip install 'pytest>=2.9' 'pylint'
-  - pip install -e .
+- pip install 'pytest>=2.9' 'pylint'
+- pip install -e .
 script:
-  - pylint --rcfile=.pylintrc api_object_schema tests setup.py
-  - pytest tests
+- pylint --rcfile=.pylintrc api_object_schema tests setup.py
+- pytest tests
+deploy:
+  provider: pypi
+  user: vmalloc
+  password:
+    secure: K1tqqxuUFuq7qlK9QsCnPBKStD4jx+O9U4+O4AwMyY7N7h1vNi+IzFmQKC0QS/jtEaQfIlIEzNNZ4CGrNygRjSpAq/mmh3klmznOFTONEBUB/Q4g4/QXkPFr74XJzvrChrbe1iDGh+wa61gET5NUlG50wDX3SAWPa4hTeBxwmyc=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: Infinidat/api_object_schema
