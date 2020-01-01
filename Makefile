@@ -7,9 +7,7 @@ env: .env/.up-to-date
 
 .env/.up-to-date: setup.py Makefile
 	virtualenv --no-site-packages .env
-	.env/bin/pip install -e .[testing] -r doc/pip_requirements.txt
-	.env/bin/pip install pytest pylint
-	.env/bin/pip install coverage
+	.env/bin/pip install -e .[testing,doc]
 	touch $@
 
 doc: env
