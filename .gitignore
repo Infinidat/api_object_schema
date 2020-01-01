@@ -9,3 +9,6 @@ flycheck_*
 dist
 .env
 .cache
+.eggs
+AUTHORS
+ChangeLog

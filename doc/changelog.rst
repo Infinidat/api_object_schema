@@ -1,6 +1,7 @@
 Changelog
 =========
 
+* :feature:`-` Switch to PBR
 * :release:`2.0.0 <19-07-2017>`
 * :feature:`3` Allow changing a field's default value after creation
 * :feature:`2` Support a way to forbid field names/api_names overrides

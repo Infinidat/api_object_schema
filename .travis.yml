@@ -5,8 +5,7 @@ python:
 - '3.6'
 - pypy
 install:
-- pip install 'pytest>=2.9' 'pylint'
-- pip install -e .
+- pip install -e ".[testing]"
 script:
 - pylint --rcfile=.pylintrc api_object_schema tests setup.py
 - pytest tests
