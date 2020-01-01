@@ -10,7 +10,7 @@ class Field(object):
     This class represents a single field exposed by a schema
     """
 
-    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False, is_unique=False,
+    def __init__(self, name, api_name=None, type=str, mutable=False, creation_parameter=False,
                  default=NOTHING, is_identity=False, is_filterable=False, is_sortable=False, binding=None,
                  optional=False, sorting_key=None, is_visible=True):
         super(Field, self).__init__()
@@ -33,8 +33,6 @@ class Field(object):
         self.creation_parameter = creation_parameter
         #:If this is a creation parameter, controls whether we can omit this parameter
         self.optional = optional
-        #:If True, means that this field value must be unique across the API
-        self.is_unique = is_unique
         #:If True, this field is a part of an set of fields used to identify this object in the API
         self.is_identity = is_identity
         #:Can we filter objects according to this field
