@@ -1,6 +1,7 @@
 Changelog
 =========
 
+* :feature:`-` Remove ``Field.is_unique``
 * :feature:`-` Update supported python versions to: 3.5, 3.6, 3.7, 3.8 (2.7 was removed)
 * :feature:`-` Switch to PBR
 * :release:`2.0.0 <19-07-2017>`
